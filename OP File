@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>One Piece Idle Game</title>
+  <style>
+    body { font-family: sans-serif; background: #f8f8f8; color: #333; text-align: center; padding: 20px; }
+    h1 { color: #e63946; }
+    .character, .enemy { background: #fff; padding: 20px; margin: 15px; border-radius: 10px; width: 80%; max-width: 400px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+    button { padding: 10px 20px; font-size: 16px; margin-top: 10px; border-radius: 5px; background: #f77f00; color: white; cursor: pointer; }
+    button:disabled { background: #ccc; }
+    .stats { margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>One Piece AFK Idle Game</h1>
+  <p id="gold">Gold: 0</p>
+
+  <!-- Character Section -->
+  <div class="character" id="luffy">
+    <h2>Luffy</h2>
+    <p id="luffy-level">Level: 1</p>
+    <p id="luffy-damage">Damage: 1</p>
+    <button onclick="levelUp('luffy')">Level Up (Cost: 10)</button>
+  </div>
+  
+  <div class="character" id="zoro">
+    <h2>Zoro</h2>
+    <p id="zoro-level">Level: 1</p>
+    <p id="zoro-damage">Damage: 2</p>
+    <button onclick="levelUp('zoro')">Level Up (Cost: 15)</button>
+  </div>
+  
+  <div class="character" id="sanji">
+    <h2>Sanji</h2>
+    <p id="sanji-level">Level: 1</p>
+    <p id="sanji-damage">Damage: 3</p>
+    <button onclick="levelUp('sanji')">Level Up (Cost: 20)</button>
+  </div>
+
+  <!-- Enemy Section -->
+  <div class="enemy" id="marine">
+    <h2>Marine Soldier</h2>
+    <p id="marine-health">Health: 10</p>
+    <p id="marine-damage">Damage: 1</p>
+    <button onclick="attackEnemy('marine')">Attack</button>
+  </div>
+  
+  <div class="enemy" id="buggy">
+    <h2>Buggy</h2>
+    <p id="buggy-health">Health: 20</p>
+    <p id="buggy-damage">Damage: 2</p>
+    <button onclick="attackEnemy('buggy')">Attack</button>
+  </div>
+  
+  <div class="enemy" id="crocodile">
+    <h2>Crocodile</h2>
+    <p id="crocodile-health">Health: 30</p>
+    <p id="crocodile-damage">Damage: 3</p>
+    <button onclick="attackEnemy('crocodile')">Attack</button>
+  </div>
+
+  <script>
+    let gold = 0;
+    let characters = {
+      luffy: { level: 1, cost: 10, damage: 1 },
+      zoro: { level: 1, cost: 15, damage: 2 },
+      sanji: { level: 1, cost: 20, damage: 3 },
+    };
+
+    let enemies = {
+      marine: { health: 10, damage: 1 },
+      buggy: { health: 20, damage: 2 },
+      crocodile: { health: 30, damage: 3 },
+    };
+
+    // Update UI for gold and characters/enemies
+    function updateUI() {
+      document.getElementById('gold').innerText = `Gold: ${gold}`;
+      for (let char in characters) {
+        document.getElementById(`${char}-level`).innerText = `Level: ${characters[char].level}`;
+        document.getElementById(`${char}-damage`).innerText = `Damage: ${characters[char].damage}`;
+      }
+      for (let enemy in enemies) {
+        document.getElementById(`${enemy}-health`).innerText = `Health: ${enemies[enemy].health}`;
+        document.getElementById(`${enemy}-damage`).innerText = `Damage: ${enemies[enemy].damage}`;
+      }
+    }
+
+    // Level up a character
+    function levelUp(character) {
+      if (gold >= characters[character].cost) {
+        gold -= characters[character].cost;
+        characters[character].level++;
+        characters[character].damage++;
+        characters[character].cost = Math.floor(characters[character].cost * 1.5);
+        updateUI();
+      }
+    }
+
+    // Attack an enemy
+    function attackEnemy(enemy) {
+      let charDamage = 0;
+      for (let char in characters) {
+        charDamage += characters[char].damage;
+      }
+
+      enemies[enemy].health -= charDamage;
+      gold += 5; // Award gold for attacking
+
+      if (enemies[enemy].health <= 0) {
+        enemies[enemy].health = 0;
+        alert(`${enemy} defeated!`);
+      }
+
+      updateUI();
+    }
+
+    // Periodically generate gold
+    setInterval(() => {
+      gold += characters.luffy.damage + characters.zoro.damage + characters.sanji.damage;
+      updateUI();
+    }, 1000);
+
+    updateUI();
+  </script>
+</body>
+</html>
